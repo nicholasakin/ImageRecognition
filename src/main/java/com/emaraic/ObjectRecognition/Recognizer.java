@@ -46,8 +46,6 @@ public class Recognizer extends JFrame implements ActionListener {
     private JButton predictAni;
     private JButton incep;
     private JButton img;
-    private JFileChooser incepch;
-    private JFileChooser imgch;
     private JLabel viewer;
     private JTextField result;
     private JTextField imgpth;
@@ -56,11 +54,6 @@ public class Recognizer extends JFrame implements ActionListener {
             "JPG & JPEG Images", "jpg", "jpeg");
     private String modelpath;
     private String imagepath;
-
-    private JTextField imagePath;
-    private String p;
-
-    private boolean modelselected = false;
     private byte[] graphDef;
     private List<String> labels;
 
@@ -76,16 +69,9 @@ public class Recognizer extends JFrame implements ActionListener {
         predictAni.setEnabled(true);
         predictMlc.setEnabled(true);
 
-
         predictAni.addActionListener(this);
         predictMlc.addActionListener(this);
 
-
-        result = new JTextField();
-        modelpth = new JTextField();
-        imgpth = new JTextField();
-        modelpth.setEditable(false);
-        imgpth.setEditable(false);
         viewer = new JLabel();
         getContentPane().add(table);
 
@@ -101,8 +87,10 @@ public class Recognizer extends JFrame implements ActionListener {
 
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    }
-
+    } //Constructor
+    
+    
+   // Lists all of the image files in the specified directory
     public void listFilesForFolder(File fold) {
         for (File fileEntry : fold.listFiles()) {
             if (fileEntry.isDirectory()) {
@@ -115,6 +103,9 @@ public class Recognizer extends JFrame implements ActionListener {
         }
     }
 
+    //MODIFACTIONS NEEDED FOR LOCAL EXECUTION
+    //fold variable - path needs to be replaced with path to images for program to recognize (images should be in .jpg/jpeg format)
+    //path variable - path needs to be replaced with path to output text file (file should be a blank .txt file)
     @Override
     public void actionPerformed(ActionEvent e) {
         paths = new LinkedList<>();
@@ -125,9 +116,11 @@ public class Recognizer extends JFrame implements ActionListener {
         if (e.getSource() == predictMlc) {
 
             //path to images library
+            //replace with path to images
             fold = new File("C:\\Users\\Nika_Kcin\\Documents\\UGA\\Object Recog\\object-recognition-tensorflow-master\\Resources\\images\\mlc");
         } else {
             //path to Images library
+            //replace with path to images
             fold = new File("C:\\Users\\Nika_Kcin\\Documents\\UGA\\Object Recog\\object-recognition-tensorflow-master\\Resources\\images\\Animals");
         } //changing file directory
         
@@ -137,6 +130,7 @@ public class Recognizer extends JFrame implements ActionListener {
             listFilesForFolder(fold);
             
             //path to the output .txt file
+            //replace with path to output text file
             String path = "C:\\Users\\Nika_Kcin\\Documents\\UGA\\Object Recog\\object-recognition-tensorflow-master\\src\\main\\java\\com\\emaraic\\ObjectRecognition\\Names.txt";
 
             BufferedWriter br = new BufferedWriter(new FileWriter(path));
@@ -144,15 +138,12 @@ public class Recognizer extends JFrame implements ActionListener {
             //Need to download inception_dec_2015
             //https://storage.googleapis.com/download.tensorflow.org/models/inception_dec_2015.zip
             modelpath = "C:\\Users\\Nika_Kcin\\Documents\\UGA\\Object Recog\\inception_dec_2015";
-            modelpth.setText(modelpath);
             System.out.println("Opening: " + modelpath);
-            modelselected = true;
             graphDef = readAllBytesOrExit(Paths.get(modelpath, "tensorflow_inception_graph.pb"));
             labels = readAllLinesOrExit(Paths.get(modelpath, "imagenet_comp_graph_label_strings.txt"));
 
             //path to spirit animal, Tiger Cat.
             imagepath = "C:\\Users\\Nika_Kcin\\Documents\\UGA\\Object Recog\\object-recognition-tensorflow-master\\Resources\\images\\cat.jpg";
-            imgpth.setText(imagepath);
             System.out.println("Image Path: " + imagepath);
 
             
@@ -170,10 +161,6 @@ public class Recognizer extends JFrame implements ActionListener {
 
                     float[] labelProbabilities = executeInceptionGraph(graphDef, img);
                     int bestLabelIdx = maxIndex(labelProbabilities);
-                    result.setText("");
-                    result.setText(String.format(
-                            "BEST MATCH: %s (%.2f%% likely)",
-                            labels.get(bestLabelIdx), labelProbabilities[bestLabelIdx] * 100f));
                     System.out.println(
                             String.format(
                                     "BEST MATCH: %s (%.2f%% likely)",

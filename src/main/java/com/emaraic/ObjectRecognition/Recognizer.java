@@ -76,19 +76,11 @@ public class Recognizer extends JFrame implements ActionListener {
         predictAni.setEnabled(true);
         predictMlc.setEnabled(true);
 
-//        incep = new JButton("Choose Inception");
-//        img = new JButton("Choose Image");
-//        incep.addActionListener(this);
-//        img.addActionListener(this);
-//      
+
         predictAni.addActionListener(this);
         predictMlc.addActionListener(this);
 
-        //incepch = new JFileChooser();
-//        imgch = new JFileChooser();
-//        imgch.setFileFilter(imgfilter);
-//        imgch.setFileSelectionMode(JFileChooser.FILES_ONLY);
-//        incepch.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
         result = new JTextField();
         modelpth = new JTextField();
         imgpth = new JTextField();
@@ -96,19 +88,10 @@ public class Recognizer extends JFrame implements ActionListener {
         imgpth.setEditable(false);
         viewer = new JLabel();
         getContentPane().add(table);
-        // table.addCell(modelpth).width(250);
-        // table.addCell(incep);
-        //table.row();
-        //table.addCell(imgpth).width(250);
-        //table.addCell(img);
 
-        // table.row();
-        // table.addCell(viewer).size(200, 200).colspan(2);
-        // table.row();
         table.addCell(predictAni).colspan(2);
         table.addCell(predictMlc).colspan(2);
-        //table.row();
-        // table.addCell(result).width(300).colspan(2);
+
         table.row();
         table.addCell(new JLabel("By: Tiger Cat")).center().padTop(30).colspan(2);
         table.row();
@@ -141,18 +124,25 @@ public class Recognizer extends JFrame implements ActionListener {
         File fold;
         if (e.getSource() == predictMlc) {
 
+            //path to images library
             fold = new File("C:\\Users\\Nika_Kcin\\Documents\\UGA\\Object Recog\\object-recognition-tensorflow-master\\Resources\\images\\mlc");
         } else {
+            //path to Images library
             fold = new File("C:\\Users\\Nika_Kcin\\Documents\\UGA\\Object Recog\\object-recognition-tensorflow-master\\Resources\\images\\Animals");
         } //changing file directory
+        
+        
         try {
+            //finds all of the image files
             listFilesForFolder(fold);
-            System.out.println("Paths size: " + paths.size());
-
+            
+            //path to the output .txt file
             String path = "C:\\Users\\Nika_Kcin\\Documents\\UGA\\Object Recog\\object-recognition-tensorflow-master\\src\\main\\java\\com\\emaraic\\ObjectRecognition\\Names.txt";
 
             BufferedWriter br = new BufferedWriter(new FileWriter(path));
 
+            //Need to download inception_dec_2015
+            //https://storage.googleapis.com/download.tensorflow.org/models/inception_dec_2015.zip
             modelpath = "C:\\Users\\Nika_Kcin\\Documents\\UGA\\Object Recog\\inception_dec_2015";
             modelpth.setText(modelpath);
             System.out.println("Opening: " + modelpath);
@@ -160,10 +150,13 @@ public class Recognizer extends JFrame implements ActionListener {
             graphDef = readAllBytesOrExit(Paths.get(modelpath, "tensorflow_inception_graph.pb"));
             labels = readAllLinesOrExit(Paths.get(modelpath, "imagenet_comp_graph_label_strings.txt"));
 
+            //path to spirit animal, Tiger Cat.
             imagepath = "C:\\Users\\Nika_Kcin\\Documents\\UGA\\Object Recog\\object-recognition-tensorflow-master\\Resources\\images\\cat.jpg";
             imgpth.setText(imagepath);
             System.out.println("Image Path: " + imagepath);
 
+            
+            //reads the images and predicts image
             for (int i = 0; i < paths.size(); i++) {
                 byte[] imageBytes = readAllBytesOrExit(Paths.get(imagepath));
 
@@ -201,7 +194,6 @@ public class Recognizer extends JFrame implements ActionListener {
             System.out.println("Stuff");
         } //catch
 
-        ///
     } //ActionPerformed
 
     private static float[] executeInceptionGraph(byte[] graphDef, Tensor image) {
